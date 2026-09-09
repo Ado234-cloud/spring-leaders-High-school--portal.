@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Leaders Portal | Official Student & Teacher Hub</title>
+    <style>
+        :root {
+            --primary: #007bff;
+            --primary-dark: #0056b3;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --bg-color: #f2f4f7;
+            --card-bg: #ffffff;
+            --text-main: #222222;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            padding: 10px;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 16px;
+            max-width: 650px;
+            margin: 10px auto;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+
+        .school-header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .school-header h1 {
+            margin: 0;
+            color: var(--primary-dark);
+            font-size: 22px;
+        }
+
+        .school-header p {
+            margin: 5px 0 0;
+            color: #666;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Fixed Mobile-Friendly Tab Buttons */
+        .tab-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: #e9ecef;
+            padding: 6px;
+            border-radius: 10px;
+        }
+
+        .tab-buttons button {
+            width: 100%;
+            padding: 10px 8px;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #555;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .tab-buttons button.active {
+            background: var(--card-bg);
+            color: var(--primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 12px;
+            font-size: 13px;
+            color: #444;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fafbfc;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+
+        button.submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--success);
+            color: white;
+            border: none;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button.submit-btn:hover {
+            background: #218838;
+        }
+
+        .result-card {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-left: 5px solid var(--primary);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .badge-success { background: var(--success); }
+        .badge-danger { background: var(--danger); }
+
+        .notice-card {
+            background: #fff9e6;
+            border-left: 5px solid var(--warning);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+
+        .notice-card h4 {
+            margin: 0 0 5px 0;
+            color: #856404;
+        }
+
+        .notice-card p {
+            margin: 0;
+            font-size: 13px;
+            color: #444;
+        }
+
+        table.fee-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table.fee-table th, table.fee-table td {
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        table.fee-table th {
+            background-color: #e9ecef;
+            color: #333;
+        }
+
+        #teacherContent, #bursarContent {
+            display: none;
+        }
+
+        .print-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #resultCard, #resultCard * {
+                visibility: visible;
+            }
+            #resultCard {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                border: none;
+                background: white;
+                box-shadow: none;
+            }
+            .print-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="school-header">
+        <h1>Spring Leaders High School</h1>
+        <p>JSS Student Result & Information Portal</p>
+    </div>
+
+    <!-- Clean 2x2 Grid Tab Layout for Mobile -->
+    <div class="tab-buttons">
+        <button id="teacherTab" class="active" onclick="switchTab('teacher')">Teacher Portal</button>
+        <button id="parentTab" onclick="switchTab('parent')">Parent Portal</button>
+        <button id="bursarTab" onclick="switchTab('bursar')">Bursary Desk</button>
+        <button id="noticeTab" onclick="switchTab('notice')">Notice & Fees</button>
+    </div>
+
+    <!-- Teacher Authentication & Form Section -->
+    <div id="teacherSection" class="form-section active">
+        <div id="teacherLogin">
+            <h2>Teacher Authentication</h2>
+            <label>Enter Security PIN</label>
+            <input type="password" id="teacherPass" placeholder="Enter 4-digit PIN">
+            <button class="submit-btn" onclick="verifyTeacher()">Access Portal</button>
+        </div>
+
+        <div id="teacherContent">
+            <h2>Upload Student Scores</h2>
+            
+            <div class="grid-2">
+                <div>
+                    <label>Student Name</label>
+                    <input type="text" id="name" placeholder="Full name">
+                </div>
+                <div>
+                    <label>Student ID</label>
+                    <input type="text" id="studentId" placeholder="e.g., STU-101">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <label>Class Level</label>
+                    <select id="classLevel">
+                        <option value="JSS1">JSS 1</option>
+                        <option value="JSS2">JSS 2</option>
+                        <option value="JSS3">JSS 3</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Term</label>
+                    <select id="term">
+                        <option value="First Term">First Term</option>
+                        <option value="Second Term">Second Term</option>
+                        <option value="Third Term">Third Term</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr style="margin:20px 0; border: 0; border-top: 1px solid #eee;">
+
+            <div class="grid-2">
+                <div><label>Mathematics</label><input type="number" id="math" placeholder="0-100"></div>
+                <div><label>English Language</label><input type="number" id="english" placeholder="0-100"></div>
+                <div><label>Basic Technology</label><input type="number" id="basicTech" placeholder="0-100"></div>
+                <div><label>Basic Science</label><input type="number" id="basicSci" placeholder="0-100"></div>
+                <div><label>Social Studies</label><input type="number" id="social" placeholder="0-100"></div>
+                <div><label>Civic Education</label><input type="number" id="civic" placeholder="0-100"></div>
+                <div><label>Agricultural Science</label><input type="number" id="agric" placeholder="0-100"></div>
+                <div><label>Business Studies</label><input type="number" id="business" placeholder="0-100"></div>
+                <div><label>Home Economics</label><input type="number" id="homeEcon" placeholder="0-100"></div>
+                <div><label>Cultural & Creative Arts</label><input type="number" id="cca" placeholder="0-100"></div>
+                <div><label>Computer Studies (ICT)</label><input type="number" id="ict" placeholder="0-100"></div>
+                <div><label>PHE</label><input type="number" id="phe" placeholder="0-100"></div>
+            </div>
+
+            <button class="submit-btn" onclick="saveResult()">Save Result Record</button>
+        </div>
+    </div>
+
+    <!-- Parent Portal Section -->
+    <div id="parentSection" class="form-section">
+        <h2>Check Student Result</h2>
+        <div class="grid-2">
+            <div>
+                <label>Student ID</label>
+                <input type="text" id="searchId" placeholder="e.g., STU-101">
+            </div>
+            <div>
+                <label>Term</label>
+                <select id="searchTerm">
+                    <option value="First Term">First Term</option>
+                    <option value="Second Term">Second Term</option>
+                    <option value="Third Term">Third Term</option>
+                </select>
+            </div>
+        </div>
+        <button class="submit-btn" onclick="checkResult()">View Result Sheet</button>
+
+        <div id="resultCard" class="result-card"></div>
+    </div>
+
+    <!-- Bursary Desk Section -->
+    <div id="bursarSection" class="form-section">
+        <div id="bursarLogin">
+            <h2>Bursary Authentication</h2>
+            <label>Enter Bursar PIN</label>
+            <input type="password" id="bursarPass" placeholder="Enter PIN code">
+            <button class="submit-btn" onclick="verifyBursar()">Access Ledger</button>
+        </div>
+
+        <div id="bursarContent">
+            <h2>Fee Clearance Manager</h2>
+            <p style="font-size:13px; color:#666;">Update student fee clearance status for the current term.</p>
+            
+            <label>Student ID</label>
+            <input type="text" id="bursarStudentId" placeholder="e.g., STU-101">
+
+            <div class="grid-2">
+                <div>
+                    <label>Class Level</label>
+                    <select id="bursarClass">
+                        <option value="JSS1">JSS 1</option>
+                        <option value="JSS2">JSS 2</option>
+                        <option value="JSS3">JSS 3</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Term</label>
+                    <select id="bursarTerm">
+                        <option value="First Term">First Term</option>
+                        <option value="Second Term">Second Term</option>
+                        <option value="Third Term">Third Term</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label>Payment Status</label>
+                <select id="feeStatus">
+                    <option value="CLEARED">Fully Cleared (Paid)</option>
+                    <option value="PENDING">Pending Balance</option>
+                </select>
+            </div>
+
+            <button class="submit-btn" onclick="updateFeeStatus()">Update Payment Status</button>
+        </div>
+    </div>
+
+    <!-- Notice Board & Fees Section -->
+    <div id="noticeSection" class="form-section">
+        <h2>School Notice Board & Fees</h2>
+        
+        <div class="notice-card">
+            <h4>📢 Resumption Announcement</h4>
+            <p>All Junior Secondary School students are expected to resume for the new academic term on time with complete books and school uniforms.</p>
+        </div>
+
+        <div class="notice-card">
+            <h4>💡 Important Reminders</h4>
+            <p>School fee payments must be finalized and cleared by the bursary before the start of examinations.</p>
+        </div>
+
+        <h3>Junior Secondary School Fee Schedule</h3>
+        <table class="fee-table">
+            <tr>
+                <th>Fee Component</th>
+                <th>Amount (₦)</th>
+            </tr>
+            <tr>
+                <td>Tuition Fee</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>Development & Maintenance</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>Sports & Co-curricular</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>ICT / Computer Levy</td>
+                <td>--</td>
+            </tr>
+            <tr>
+                <td>Examination & Records</td>
+                <td>--</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    const API_URL = "https://school-portalu.onrender.com/api/results";
+    const TEACHER_PIN = "8790";
+    const BURSAR_PIN = "8790";
+
+    const subjects = [
+        "math", "english", "basicTech", "basicSci", "social", 
+        "civic", "agric", "business", "homeEcon", "cca", "ict", "phe"
+    ];
+
+    function verifyTeacher() {
+        const enteredPass = document.getElementById("teacherPass").value;
+        if (enteredPass === TEACHER_PIN) {
+            document.getElementById("teacherLogin").style.display = "none";
+            document.getElementById("teacherContent").style.display = "block";
+        } else {
+            alert("Incorrect password! Access denied.");
+        }
+    }
+
+    function verifyBursar() {
+        const enteredPass = document.getElementById("bursarPass").value;
+        if (enteredPass === BURSAR_PIN) {
+            document.getElementById("bursarLogin").style.display = "none";
+            document.getElementById("bursarContent").style.display = "block";
+        } else {
+            alert("Incorrect password! Access denied.");
+        }
+    }
+
+    function switchTab(tab) {
+        ['teacherSection', 'parentSection', 'bursarSection', 'noticeSection'].forEach(s => document.getElementById(s).classList.remove('active'));
+        ['teacherTab', 'parentTab', 'bursarTab', 'noticeTab'].forEach(t => document.getElementById(t).classList.remove('active'));
+
+        if (tab === 'teacher') {
+            document.getElementById('teacherSection').classList.add('active');
+            document.getElementById('teacherTab').classList.add('active');
+        } else if (tab === 'parent') {
+            document.getElementById('parentSection').classList.add('active');
+            document.getElementById('parentTab').classList.add('active');
+        } else if (tab === 'bursar') {
+            document.getElementById('bursarSection').classList.add('active');
+            document.getElementById('bursarTab').classList.add('active');
+        } else if (tab === 'notice') {
+            document.getElementById('noticeSection').classList.add('active');
+            document.getElementById('noticeTab').classList.add('active');
+        }
+    }
+
+    function saveResult() {
+        const studentId = document.getElementById("studentId").value.trim();
+        const name = document.getElementById("name").value.trim();
+        const classLevel = document.getElementById("classLevel").value;
+        const term = document.getElementById("term").value;
+
+        if (!studentId || !name) {
+            alert("Please provide both Student Name and Student ID.");
+            return;
+        }
+
+        const uniqueStudentId = `${studentId}-${classLevel}-${term}`.replace(/\s+/g, '');
+        const payload = { studentId: uniqueStudentId, name, classLevel, term, feeStatus: "PENDING" };
+        let total = 0;
+        let count = 0;
+
+        subjects.forEach(sub => {
+            const val = Number(document.getElementById(sub).value) || 0;
+            payload[sub] = val;
+            total += val;
+            count++;
+        });
+
+        const average = (total / count).toFixed(2);
+        let grade = "F";
+        if (average >= 70) grade = "A";
+        else if (average >= 60) grade = "B";
+        else if (average >= 50) grade = "C";
+        else if (average >= 40) grade = "D";
+
+        payload.total = total;
+        payload.average = average;
+        payload.grade = grade;
+        payload.statusText = average >= 50 ? "PASSED" : "FAILED";
+
+        fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Server rejected result upload");
+            return res.json();
+        })
+        .then(data => {
+            alert(`Result securely saved for ${name} (${classLevel} - ${term})!`);
+            resetForm();
+        })
+        .catch(err => alert("Error saving result: " + err.message));
+    }
+
+    function updateFeeStatus() {
+        const rawId = document.getElementById("bursarStudentId").value.trim();
+        const classLevel = document.getElementById("bursarClass").value;
+        const term = document.getElementById("bursarTerm").value;
+        const feeStatus = document.getElementById("feeStatus").value;
+
+        if (!rawId) {
+            alert("Please enter a Student ID.");
+            return;
+        }
+
+        const targetId = `${rawId}-${classLevel}-${term}`.replace(/\s+/g, '');
+
+        fetch(`${API_URL}/${targetId}`)
+        .then(res => {
+            if (!res.ok) throw new Error("Student record not found for this class and term.");
+            return res.json();
+        })
+        .then(record => {
+            record.feeStatus = feeStatus;
+            return fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(record)
+            });
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Failed to update fee status.");
+            return res.json();
+        })
+        .then(() => {
+            alert(`Fee status successfully updated to ${feeStatus}!`);
+        })
+        .catch(err => alert("Error: " + err.message));
+    }
+
+    function checkResult() {
+        const idInput = document.getElementById("searchId").value.trim();
+        const searchTerm = document.getElementById("searchTerm").value;
+        const resultCard = document.getElementById("resultCard");
+
+        if (!idInput) {
+            alert("Please enter a Student ID to search.");
+            return;
+        }
+
+        const targetIds = [
+            `${idInput}-JSS1-${searchTerm}`.replace(/\s+/g, ''),
+            `${idInput}-JSS2-${searchTerm}`.replace(/\s+/g, ''),
+            `${idInput}-JSS3
